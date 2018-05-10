@@ -34,7 +34,7 @@ class TestPermissionActivity:AppCompatActivity(){
             button {
                 text = "调用权限请求"
                 setOnClickListener {
-                    tbMessage.text = "权限请求连接..."
+                    tbMessage.text = "调用请求页面中..."
                     startBundle(RequestStorage::class.java){
                         putString("permission", "storage")
                     }
@@ -50,8 +50,8 @@ class TestPermissionActivity:AppCompatActivity(){
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: MessageEvent) {
-        tbMessage.text = "接收代码：${event.code}"
+        tbMessage.text = "接收：${event}"
     }
 
-    class MessageEvent(val code:Int)
+    data class MessageEvent(val code:Int, val message:String="")
 }

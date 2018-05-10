@@ -4,6 +4,8 @@ import android.Manifest
 import android.support.v7.app.AppCompatActivity
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import org.greenrobot.eventbus.EventBus
 
 
@@ -16,13 +18,20 @@ class RequestStorage:AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //请求权限
-        /*ActivityCompat.requestPermissions(
-                this@RequestStorage,
-                permissionArray,
-                permissionCode)*/
-        //显示权限请求信息
-        //...
+        if (checkPermission()){
+            EventBus.getDefault().post(
+                    gxd.test.TestPermissionActivity.MessageEvent(1, "权限已存在"))
+            finish()
+        }else {
+            //请求权限
+            ActivityCompat.requestPermissions(
+                    this@RequestStorage,
+                    permissionArray,
+                    permissionCode)
+            //显示权限请求信息
+            EventBus.getDefault().post(
+                    gxd.test.TestPermissionActivity.MessageEvent(-1, "发起请求中..."))
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -35,11 +44,14 @@ class RequestStorage:AppCompatActivity(){
         //回调请求结果 !notOk
         //...
         //EventBus.getDefault().post(new MessageEvent(!notKo));
-        EventBus.getDefault().post(gxd.test.TestPermissionActivity.MessageEvent(if (notOk) 0 else 100))
+        EventBus.getDefault().post(
+                gxd.test.TestPermissionActivity.MessageEvent(
+                        if (notOk) 0 else 100,
+                        if (notOk) "请求失败" else "请求成功"))
         finish()
     }
 
-/*    private fun checkPermission() = !permissionArray.any {
+    private fun checkPermission() = !permissionArray.any {
         PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this@RequestStorage, it)
-    }*/
+    }
 }

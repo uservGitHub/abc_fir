@@ -19,7 +19,7 @@
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
-            android:name=".MainActivity"
+            android:name="gxd.test.TestPermissionActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
