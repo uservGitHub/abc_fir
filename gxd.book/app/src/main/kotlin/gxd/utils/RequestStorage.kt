@@ -6,21 +6,33 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import gxd.android.startBundle
 import org.greenrobot.eventbus.EventBus
 
-
 class RequestStorage:AppCompatActivity(){
-    val permissionArray = arrayOf<String>(
+    companion object {
+        val SUCCESS = 1
+        val FAILURE = 2
+        val ALLREADY = 3
+
+        fun check(activity: AppCompatActivity) {
+            activity.startBundle(RequestStorage::class.java)
+        }
+    }
+    private val permissionArray = arrayOf<String>(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-    val permissionCode = 1000
+    private val permissionCode = 1000
+    private val allreadyText = "权限已存在"
+    private val successText = "授权成功"
+    private val failureText = "授权失败"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (checkPermission()){
-            EventBus.getDefault().post(
-                    gxd.test.TestPermissionActivity.MessageEvent(1, "权限已存在"))
+            //存在立即返回
+            EventBus.getDefault().post(MessageEvent(ALLREADY, allreadyText))
             finish()
         }else {
             //请求权限
@@ -28,9 +40,6 @@ class RequestStorage:AppCompatActivity(){
                     this@RequestStorage,
                     permissionArray,
                     permissionCode)
-            //显示权限请求信息
-            EventBus.getDefault().post(
-                    gxd.test.TestPermissionActivity.MessageEvent(-1, "发起请求中..."))
         }
     }
 
@@ -41,13 +50,11 @@ class RequestStorage:AppCompatActivity(){
                 PackageManager.PERMISSION_GRANTED != it
             }
         }
-        //回调请求结果 !notOk
-        //...
-        //EventBus.getDefault().post(new MessageEvent(!notKo));
+
         EventBus.getDefault().post(
-                gxd.test.TestPermissionActivity.MessageEvent(
-                        if (notOk) 0 else 100,
-                        if (notOk) "请求失败" else "请求成功"))
+                MessageEvent(
+                        if (notOk) FAILURE else SUCCESS,
+                        if (notOk) failureText else successText))
         finish()
     }
 

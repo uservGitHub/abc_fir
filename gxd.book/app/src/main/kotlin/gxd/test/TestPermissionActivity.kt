@@ -5,15 +5,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
 import gxd.android.startBundle
+import gxd.utils.MessageEvent
 import gxd.utils.RequestStorage
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.jetbrains.anko.button
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.jetbrains.anko.verticalLayout
 import org.greenrobot.eventbus.ThreadMode
-import org.jetbrains.anko.textColor
-import org.jetbrains.anko.textView
+import org.jetbrains.anko.*
 
 
 /**
@@ -35,12 +32,11 @@ class TestPermissionActivity:AppCompatActivity(){
                 text = "调用权限请求"
                 setOnClickListener {
                     tbMessage.text = "调用请求页面中..."
-                    startBundle(RequestStorage::class.java){
-                        putString("permission", "storage")
-                    }
+                    RequestStorage.check(this@TestPermissionActivity)
                 }
             }
         }
+        RequestStorage.check(this)
     }
 
     override fun onDestroy() {
@@ -51,7 +47,10 @@ class TestPermissionActivity:AppCompatActivity(){
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: MessageEvent) {
         tbMessage.text = "接收：${event}"
+        when(event.code){
+            RequestStorage.SUCCESS -> longToast(event.title!!)
+            RequestStorage.FAILURE -> longToast(event.title!!)
+            RequestStorage.ALLREADY -> longToast(event.title!!)
+        }
     }
-
-    data class MessageEvent(val code:Int, val message:String="")
 }

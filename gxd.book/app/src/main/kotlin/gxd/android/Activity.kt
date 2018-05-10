@@ -45,13 +45,16 @@ inline val AppCompatActivity.statusBarHeight:Int
     }
 
 
-inline fun AppCompatActivity.startBundle(cls: Class<*>,init: Bundle.()->Unit) {
+fun AppCompatActivity.startBundle(cls: Class<*>,init: (Bundle.()->Unit)? = null) {
     if (false) {
         val intent = Intent(this, cls)
-        intent.putExtra("bundle", Bundle().apply(init))
+        init?.let {
+            intent.putExtra("bundle", Bundle().apply(init))
+        }
         startActivity(intent)
     } else {
-        startActivity(Intent(this, cls), Bundle().apply(init))
+        if (init == null) startActivity(Intent(this, cls))
+        else startActivity(Intent(this, cls), Bundle().apply(init))
     }
 }
 
