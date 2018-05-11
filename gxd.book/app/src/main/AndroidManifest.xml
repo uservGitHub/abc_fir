@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme">
         <!-- 进行权限请求 -->
         <activity android:name="gxd.utils.RequestStorage"/>
+        <activity android:name="gxd.utils.FileRootActivity"/>
 
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"

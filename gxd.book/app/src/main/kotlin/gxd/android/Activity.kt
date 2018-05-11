@@ -43,10 +43,14 @@ inline val AppCompatActivity.statusBarHeight:Int
         val id = resources.getIdentifier("status_bar_height", "dimen", "android")
         return if (id > 0) resources.getDimensionPixelSize(id) else -1
     }
-
+inline val AppCompatActivity.endBundle: Bundle?
+    get() {
+        return if (intent.hasExtra("bundle")) intent.getBundleExtra("bundle")
+        else null
+    }
 
 fun AppCompatActivity.startBundle(cls: Class<*>,init: (Bundle.()->Unit)? = null) {
-    if (false) {
+    if (true) {
         val intent = Intent(this, cls)
         init?.let {
             intent.putExtra("bundle", Bundle().apply(init))
