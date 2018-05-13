@@ -15,7 +15,10 @@
         android:theme="@style/AppTheme">
         <!-- 进行权限请求 -->
         <activity android:name="gxd.utils.RequestStorage"/>
+        <!-- 选中文件或文件夹 -->
         <activity android:name="gxd.utils.FileRootActivity"/>
+        <!-- Todo -->
+        <activity android:name=".MainActivity"/>
 
         <activity
             android:configChanges="keyboardHidden|orientation|screenSize"

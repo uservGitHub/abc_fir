@@ -11,6 +11,7 @@ import butterknife.ButterKnife
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
 import gxd.book.R
 import gxd.book.model.Todo
+import gxd.curd.TAdapter
 import io.realm.Realm
 
 /**
@@ -47,7 +48,8 @@ class TodosFragment : Fragment(), TodoAdapter.TodoItemClickListener {
         Log.i(MY_TAG, "onResume: ${todos}")
         //realmRecyclerView = find(R.id.todos_recycler_view) // 可变 View
         Log.i(MY_TAG, "onResume: realmRecyclerView = ${realmRecyclerView} ")
-        val adapter = TodoAdapter(activity, todos, true, true, this)
+        //val adapter = TodoAdapter(activity, todos, true, true, this)
+        val adapter = TAdapter<Todo>(activity, todos, true, true)
         realmRecyclerView.setAdapter(adapter)
     }
 

@@ -40,7 +40,7 @@ class TodoAdapter(context: Context,
         val todo = realmResults[position]
 
         viewHolder.todoTitle.setText(todo.title)
-        viewHolder.todoTitle.fontFeatureSettings = "font-size:12px"
+        viewHolder.todoTitle.fontFeatureSettings = "font-size:40px"
         viewHolder.todoTitle.setTextColor(Color.argb(255, 69, 106, 124))
 
         viewHolder.todoContent.setText(todo.content)

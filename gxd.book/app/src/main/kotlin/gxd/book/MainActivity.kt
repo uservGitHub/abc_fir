@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import com.shockwave.pdfium.PdfiumCore
 import gxd.book.R
+import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
 
 //import butterknife.bindView
@@ -21,11 +22,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pdfCore = PdfiumCore(this)
-        toast("pdfCore is ${if(pdfCore===null)"null" else "ok"}")
+        longToast("pdfCore is ${if(pdfCore===null)"null" else "ok"}")
         setContentView(R.layout.activity_main)
 
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
+        //不是初始窗口，不能调用
+        /*val toolbar = findViewById(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)*/
 
         fab = findViewById(R.id.fab) as FloatingActionButton
 

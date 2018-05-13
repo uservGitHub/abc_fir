@@ -10,7 +10,8 @@ import io.realm.annotations.RealmClass
 @RealmClass
 open class Todo : RealmObject() {
     @PrimaryKey
-    open var id: String = "-1"
-    open var title: String = "日程"
-    open var content: String = "事项"
+    open var id_ao: String = "-1"
+    open var title_ao: String = "日程"
+    open var content_ao: String = "事项"
+    //open var aaa:Int = 100
 }

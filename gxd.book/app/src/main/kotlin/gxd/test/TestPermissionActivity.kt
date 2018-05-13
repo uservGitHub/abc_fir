@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
 import gxd.android.sdPath
 import gxd.android.startBundle
+import gxd.book.MainActivity
 import gxd.utils.FileRootActivity
 import gxd.utils.MessageEvent
 import gxd.utils.RequestStorage
@@ -32,6 +33,12 @@ class TestPermissionActivity:AppCompatActivity(){
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
         verticalLayout {
+            button {
+                text = "调用Todo"
+                setOnClickListener {
+                    startBundle(MainActivity::class.java)
+                }
+            }
             tbMessage = textView {
                 text = ""
                 textSize = 40F
