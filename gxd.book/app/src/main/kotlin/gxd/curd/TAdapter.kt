@@ -52,12 +52,7 @@ class TAdapter<T: RealmObject>(val context: Context,
         viewHolder.todoTitle.setText(todo.title)
         viewHolder.todoTitle.fontFeatureSettings = "font-size:40px"
         viewHolder.todoTitle.setTextColor(Color.argb(255, 69, 106, 124))
-
-        viewHolder.todoContent.setText(todo.content)*/
-
-        /*val todo = realmResults[position] as Todo
-        viewHolder.tv1.text = todo.title
-        viewHolder.tv2.text = todo.content*/
+*/
     }
 
     interface TodoItemClickListener<T> {
@@ -73,7 +68,7 @@ class TAdapter<T: RealmObject>(val context: Context,
         }
 
         override fun onClick(v: View) {
-            //clickListener?.onClick(v, realmResults[adapterPosition])
+            clickListener?.onClick(v, realmResults[adapterPosition])
         }
     }
 }

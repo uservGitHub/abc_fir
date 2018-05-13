@@ -19,7 +19,7 @@ import io.realm.Realm
  */
 
 
-class TodosFragment : Fragment(), TodoAdapter.TodoItemClickListener {
+class TodosFragment : Fragment(), TAdapter.TodoItemClickListener<Todo> {
     val MY_TAG = "MY_TODOS"
     // protected val realmRecyclerView: RealmRecyclerView by bindView(R.id.todos_recycler_view)
     // var realmRecyclerView: RealmRecyclerView? = null // var 可变 View
@@ -49,7 +49,7 @@ class TodosFragment : Fragment(), TodoAdapter.TodoItemClickListener {
         //realmRecyclerView = find(R.id.todos_recycler_view) // 可变 View
         Log.i(MY_TAG, "onResume: realmRecyclerView = ${realmRecyclerView} ")
         //val adapter = TodoAdapter(activity, todos, true, true, this)
-        val adapter = TAdapter<Todo>(activity, todos, true, true)
+        val adapter = TAdapter<Todo>(activity, todos, true, true, this)
         realmRecyclerView.setAdapter(adapter)
     }
 
@@ -62,7 +62,7 @@ class TodosFragment : Fragment(), TodoAdapter.TodoItemClickListener {
     override fun onClick(caller: View, todo: Todo) {
         (activity as MainActivity).hideFab()
 
-        val todoEditFragment = TodoEditFragment.newInstance(todo.id)
+        val todoEditFragment = TodoEditFragment.newInstance(todo.id_ao)
         activity.supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.content_main, todoEditFragment, todoEditFragment.javaClass.getSimpleName())

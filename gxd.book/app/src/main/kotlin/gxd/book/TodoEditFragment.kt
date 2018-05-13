@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import gxd.book.R
 import gxd.book.model.Todo
+import gxd.curd.TRefModel
 import io.realm.Realm
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -37,25 +38,17 @@ class TodoEditFragment : Fragment() {
             return TodoEditFragment()
         }
     }
-
+    lateinit var hostView:View
+    lateinit var btnCommand:Button
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        hostView = TRefModel.toEditView(context,Todo())
         return UI {
             // AnkoContext
-
-            verticalLayout {
+            val frame = verticalLayout {
                 padding = dip(30)
-                var title = editText {
-                    // editText 视图
-                    id = R.id.todo_title
-                    hintResource = R.string.title_hint
-                }
+                addView(hostView)
 
-                var content = editText {
-                    id = R.id.todo_content
-                    height = 400
-                    hintResource = R.string.content_hint
-                }
-                button {
+                btnCommand = button {
                     // button 视图
                     id = R.id.todo_add
                     textResource = R.string.add_todo
@@ -64,13 +57,13 @@ class TodoEditFragment : Fragment() {
                     //onClick { _ -> createTodoFrom(title, content) }
                     //onClick { createTodoFrom(title, content) }
                     setOnClickListener {
-                        createTodoFrom(title, content)
+                        saveTodo()
                     }
                 }
             }
-
-
         }.view
+
+        //return TRefModel.toView(context, Todo())
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -79,16 +72,21 @@ class TodoEditFragment : Fragment() {
         if (arguments != null && arguments.containsKey(TODO_ID_KEY)) {
 
             val todoId = arguments.getString(TODO_ID_KEY)
-            todo = realm.where(Todo::class.java).equalTo("id", todoId).findFirst()
+            //todo = realm.where(Todo::class.java).equalTo("id", todoId).findFirst()
+            //val todos = realm!!.where(Todo::class.java).findAll()
+            todo = realm.where(Todo::class.java).equalTo("id_ao", todoId).findFirst()
+            TRefModel.updateView(hostView, todo!!)
 
+            /*
             val todoTitle = find<EditText>(R.id.todo_title)
-            todoTitle.setText(todo?.title)
+            todoTitle.setText(todo?.title_ao)
 
             val todoContent = find<EditText>(R.id.todo_content)
-            todoContent.setText(todo?.content)
+            todoContent.setText(todo?.content_ao)*/
 
-            val add = find<Button>(R.id.todo_add)
-            add.setText(R.string.save)
+            /*val add = find<Button>(R.id.todo_add)
+            add.setText(R.string.save)*/
+            btnCommand.setText(R.string.save)
         }
     }
 
@@ -96,7 +94,28 @@ class TodoEditFragment : Fragment() {
         super.onDestroy()
         realm.close()
     }
+    private fun saveTodo() {
 
+        realm.beginTransaction()
+        // Either update the edited object or create a new one.
+        /*var t = todo ?: realm.createObject(Todo::class.java)
+        t.id_ao = todo?.id_ao ?: UUID.randomUUID().toString()
+        t.title_ao = title.text.toString()
+        t.content_ao = todoContent.text.toString()*/
+        var t = todo ?: realm.createObject(Todo::class.java)
+        try{
+            TRefModel.updateObj(t, hostView)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        realm.commitTransaction()
+
+        activity.supportFragmentManager.popBackStack()
+        // 返回 MainActivity
+//        val intent = Intent()
+//        intent.setClass(activity, MainActivity::class.java)
+//        activity.startActivity(intent)
+    }
 
     /**
      *  新增待办事项，存入Realm数据库
@@ -109,9 +128,9 @@ class TodoEditFragment : Fragment() {
         realm.beginTransaction()
         // Either update the edited object or create a new one.
         var t = todo ?: realm.createObject(Todo::class.java)
-        t.id = todo?.id ?: UUID.randomUUID().toString()
-        t.title = title.text.toString()
-        t.content = todoContent.text.toString()
+        t.id_ao = todo?.id_ao ?: UUID.randomUUID().toString()
+        t.title_ao = title.text.toString()
+        t.content_ao = todoContent.text.toString()
 
         realm.commitTransaction()
 

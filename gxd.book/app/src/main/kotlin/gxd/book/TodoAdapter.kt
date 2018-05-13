@@ -39,11 +39,11 @@ class TodoAdapter(context: Context,
     override fun onBindRealmViewHolder(viewHolder: ViewHolder, position: Int) {
         val todo = realmResults[position]
 
-        viewHolder.todoTitle.setText(todo.title)
+        viewHolder.todoTitle.setText(todo.title_ao)
         viewHolder.todoTitle.fontFeatureSettings = "font-size:40px"
         viewHolder.todoTitle.setTextColor(Color.argb(255, 69, 106, 124))
 
-        viewHolder.todoContent.setText(todo.content)
+        viewHolder.todoContent.setText(todo.content_ao)
     }
 
     interface TodoItemClickListener {
