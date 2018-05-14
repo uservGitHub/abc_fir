@@ -52,12 +52,12 @@ class KotlinMainActivity : AppCompatActivity() {
 
         // More complex operations can be executed on another thread, for example using
         // Anko's doAsync extension method.
-        doAsync {
-            var info = ""
 
+        //有异常不抛出，自动终止
+        doAsync {
             // Open the default realm. All threads must use its own reference to the realm.
             // Those can not be transferred across threads.
-
+            var info = ""
             // Realm implements the Closable interface, therefore
             // we can make use of Kotlin's built-in extension method 'use' (pun intended).
             Realm.getDefaultInstance().use { realm ->
@@ -89,7 +89,7 @@ class KotlinMainActivity : AppCompatActivity() {
         // All writes must be wrapped in a transaction to facilitate safe multi threading
         realm.executeTransaction { realm ->
             // Add a person
-            val person = realm.createObject<Person>(1)
+            val person = realm.createObject<Person>(0)
             person.name = "Young Person"
             person.age = 14
         }
@@ -128,8 +128,37 @@ class KotlinMainActivity : AppCompatActivity() {
     private fun complexReadWrite(realm: Realm): String {
         var status = "\nPerforming complex Read/Write operation..."
 
+        //region    移动
+        val persons = mutableListOf<Person>()
+        val fido = Dog()//realm.createObject<Dog>()
+        fido.name = "fido"
+        for (i in 1..9) {
+            val person = Person(i.toLong())//realm.createObject<Person>(i.toLong())
+            persons.add(person)
+            person.name = "Person no. $i"
+            person.age = i
+            person.dog = fido
+
+            // The field tempReference is annotated with @Ignore.
+            // This means setTempReference sets the Person tempReference
+            // field directly. The tempReference is NOT saved as part of
+            // the RealmObject:
+            person.tempReference = 42
+
+            for (j in 0..i - 1) {
+                val cat = Cat()//realm.createObject<Cat>()
+                cat.name = "Cat_$j"
+                person.cats.add(cat)
+            }
+        }
+        //endregion
+
         // Add ten persons in one transaction
         realm.executeTransaction {
+            persons.forEach {
+                realm.copyToRealm(it)
+            }
+            /*
             val fido = realm.createObject<Dog>()
             fido.name = "fido"
             for (i in 1..9) {
@@ -149,12 +178,19 @@ class KotlinMainActivity : AppCompatActivity() {
                     cat.name = "Cat_$j"
                     person.cats.add(cat)
                 }
-            }
+            }*/
         }
 
         // Implicit read transactions allow you to access your objects
         status += "\nNumber of persons: ${realm.where<Person>().count()}"
 
+        //取出
+        val realPersons = realm.where<Person>().between("id",1,9).findAll()
+        persons.clear()
+        realPersons.forEach {
+            persons.add(realm.copyFromRealm(it))
+        }
+        Log.v(TAG, persons.size.toString())
         // Iterate over all objects
         for (person in realm.where<Person>().findAll()) {
             val dogName: String = person?.dog?.name ?: "None"
