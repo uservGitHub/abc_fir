@@ -22,6 +22,13 @@ import org.jetbrains.anko.uiThread
 class KotlinMainActivity : AppCompatActivity() {
     companion object {
         const val TAG: String = "KotlinExampleActivity"
+        private fun nameEqual(what:Any, whatProxy:Any, realm: Realm):Boolean{
+            val clazzWhat = what::class.java
+            val clazzWhatProxy = whatProxy::class.java
+
+            val parseWhatName ="io.realm.${clazzWhat.name.replace('.','_')}RealmProxy"
+            return parseWhatName == clazzWhatProxy.name
+        }
     }
 
     private lateinit var rootLayout: LinearLayout
@@ -96,6 +103,9 @@ class KotlinMainActivity : AppCompatActivity() {
 
         // Find the first person (no query conditions) and read a field
         val person = realm.where<Person>().findFirst()!!
+        val what = realm.copyFromRealm(person)
+        val isSameName = nameEqual(what, person, realm)
+        Log.v(TAG, isSameName.toString())
         showStatus(person.name + ": " + person.age)
 
         // Update person in a transaction
