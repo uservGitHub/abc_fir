@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Kotlin MainActivity</string>
+    <string name="status_output">Status Output...</string>
+</resources>
