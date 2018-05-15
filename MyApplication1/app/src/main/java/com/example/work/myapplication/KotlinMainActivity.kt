@@ -60,7 +60,7 @@ class KotlinMainActivity : AppCompatActivity() {
         // More complex operations can be executed on another thread, for example using
         // Anko's doAsync extension method.
 
-        //���쳣���׳����Զ���ֹ
+        //有异常不抛出，自动终止
         doAsync {
             // Open the default realm. All threads must use its own reference to the realm.
             // Those can not be transferred across threads.
@@ -138,7 +138,7 @@ class KotlinMainActivity : AppCompatActivity() {
     private fun complexReadWrite(realm: Realm): String {
         var status = "\nPerforming complex Read/Write operation..."
 
-        //region    �ƶ�
+        //region    移动
         val persons = mutableListOf<Person>()
         val fido = Dog()//realm.createObject<Dog>()
         fido.name = "fido"
@@ -162,6 +162,8 @@ class KotlinMainActivity : AppCompatActivity() {
             }
         }
         //endregion
+
+
 
         // Add ten persons in one transaction
         realm.executeTransaction {
@@ -191,10 +193,24 @@ class KotlinMainActivity : AppCompatActivity() {
             }*/
         }
 
+        //查一下，狗狗有9只，猫猫有9*(1+9)/2=45只。
+        val dogCount = realm.where<Dog>().findAll().size
+        val catCount = realm.where<Cat>().findAll().size
+        Log.i(TAG, "dog count = $dogCount , cat count = $catCount")
+        realm.executeTransaction{
+            realm.where<Dog>().findAll().forEachIndexed { index, dog ->
+                dog.name = "rename_$index"
+            }
+        }
+        val dogs = realm.where<Dog>().findAll()!!
+        val personDogs = realm.where<Person>()
+                .findAll()
+                .map { it.dog }
+
         // Implicit read transactions allow you to access your objects
         status += "\nNumber of persons: ${realm.where<Person>().count()}"
 
-        //ȡ��
+        //取出
         val realPersons = realm.where<Person>().between("id",1,9).findAll()
         persons.clear()
         realPersons.forEach {
