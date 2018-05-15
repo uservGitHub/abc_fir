@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.LinearLayout
 import android.widget.ListView
 import com.example.work.myapplication.model.Cat
+import com.example.work.myapplication.model.Person
 import com.example.work.myapplication.waitreplace.WhatAdapter
 import com.example.work.myapplication.waitreplace.WhatView
 import io.realm.Realm
@@ -17,20 +18,38 @@ import org.jetbrains.anko.*
 
 class ListCatActivity:AppCompatActivity(){
     lateinit var realm:Realm
-    //lateinit var listView:ListView
-    //lateinit var whatAdapter:WhatAdapter<Cat>
     lateinit var frame:LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         realm = Realm.getDefaultInstance()
 
-
         verticalLayout {
+            button {
+                text = "保存"
+                setOnClickListener {
+                    realm.executeTransaction {
+                        val person = Person(100)
+                        WhatView.updateObj(person, frame.getChildAt(1))
+                        realm.copyToRealm(person)
+                    }
+
+                }
+
+            }
+            button{
+                text = "读取"
+                setOnClickListener {
+                    val cats = realm.where<Person>().findAll()!!
+                    val data = realm.copyFromRealm(cats)
+                    frame.removeAllViews()
+                    data.forEach {
+                        frame.addView(WhatView.toEditView(ctx, it))
+                    }
+                }
+            }
             frame = linearLayout {
                 orientation = LinearLayout.VERTICAL
-                textView {
-                    text = "Hello"
-                }
             }.lparams(matchParent, wrapContent)
         }
 
@@ -39,14 +58,6 @@ class ListCatActivity:AppCompatActivity(){
 
     override fun onResume() {
         super.onResume()
-        val cats = realm.where<Cat>().findAll()!!
-        val cat = realm.copyFromRealm(cats.first()!!)
-       try {
-           val view = WhatView.toView(ctx,cat)
-           frame.addView(view)
-       }catch (e:Exception){
-           e.printStackTrace()
-       }
     }
 
     override fun onDestroy() {

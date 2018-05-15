@@ -62,24 +62,23 @@ class WhatView private constructor(val className: String) {
             var rowInd = -1
             var colInd = -1
 
-            val MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT
-            val WRAP_CONTENT = ViewGroup.LayoutParams.WRAP_CONTENT
             val FONT_SIZE = ctx.sp(26).toFloat()
 
             return ctx.UI {
                 verticalLayout {
-                    lparams(width = MATCH_PARENT)
                     padding = ctx.dip(15)
+                    layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
                     backgroundColor = Color.YELLOW
                     lines.forEach {
                         //val name = it.getMName
                         val getM = model.methods[it.getMIndex]
                         val proValue = getM.invoke(obj)
+                        val valueString = if (proValue==null)"null" else proValue.toString()
                         rowInd++
                         colInd = -1
 
                         linearLayout {
-                            lparams(WRAP_CONTENT)
+
                             setPadding(0, dip(6), 0, dip(6))
                             backgroundColor = Color.GREEN
                             textView {
@@ -90,21 +89,21 @@ class WhatView private constructor(val className: String) {
                             val valueView =
                             if (isEdit) {
                                 editText {
-                                    setText(proValue.toString())
+                                    setText(valueString)
                                     textSize = FONT_SIZE
                                     colInd++
                                     it.position(rowInd, colInd)
                                 }
                             } else {
                                 textView {
-                                    text = proValue.toString()
+                                    text = valueString
                                     textSize = FONT_SIZE
                                     colInd++
                                     it.position(rowInd, colInd)
                                 }
                             }
-                            valueView.lparams(MATCH_PARENT)
-                        }
+                            valueView.lparams(matchParent)
+                        }.lparams(matchParent, wrapContent)
                     }
                 }
             }.view

@@ -22,7 +22,7 @@ class WhatAdapter<T:RealmObject>:BaseAdapter(){
         items.add(t)
         notifyDataSetChanged()
     }
-    private val items = mutableListOf<T>()
+    private var items = mutableListOf<T>()
     override fun getCount(): Int {
         return items.size
     }
